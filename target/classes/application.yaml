@@ -1,0 +1,65 @@
+camunda.bpm:
+  admin-user:
+    id: demo
+    password: demo
+    firstName: Demo
+    lastName: Demo
+  filter:
+    create: All Tasks
+  authorization:
+    enabled: true
+
+logging:
+  level:
+    org.springframework: DEBUG
+    org.camunda: DEBUG
+    com.camunda.example.oauth2: DEBUG
+
+server:
+  #  ssl:
+  #    key-store-type: PKCS12
+  #    key-store: classpath:keystore/keystore.p12
+  #    key-store-password: password
+  #    key-alias: testCert
+  #  servlet:
+  #    session:
+  #      cookie:
+  #        secure: true
+  port: 8080
+  forward-headers-strategy: native
+
+
+azure:
+  activedirectory:
+    tenant-id: 30a6b9c1-e073-4fbb-b5e3-da13237f9f55
+    user-group:
+      allowed-group-names: camunda-admin,facility
+    client-id: 5975d6ff-f126-4f4f-81ea-a5a03119b337
+    client-secret: IgR7Q~cJUBLZYwQtGMlHSQDPz-ANEUEaplTC5
+
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    #url: jdbc:postgresql://your-db-domain.postgres.database.azure.com:5432/postgres?ssl=true&sslmode=require
+    #username: camunda@your-db-domain
+    #password: yourdbpass
+    #driver-class-name: org.postgresql.Driver
+    url: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: sa
+
+  security:
+    oauth2:
+      client:
+        registration:
+          azure:
+            client-id: 5975d6ff-f126-4f4f-81ea-a5a03119b337
+            client-secret: IgR7Q~cJUBLZYwQtGMlHSQDPz-ANEUEaplTC5
+            redirect-uri: http://localhost:8080/login/oauth2/code/azure
+            authorization-grant-type: client_credentials
+        provider:
+          azure:
+            #token-uri: https://login.microsoftonline.com/30a6b9c1-e073-4fbb-b5e3-da13237f9f55/oauth2/token
+            token-uri: https://login.microsoftonline.com/${azure.activedirectory.tenant-id}/oauth2/token
